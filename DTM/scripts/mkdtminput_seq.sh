@@ -11,10 +11,6 @@ to_date=$2
 interval_month=$3
 date_filename=$4
 
-# MySQLグローバル変数書き換え
-# 以降のSQL文にて，group_concatの返却文字列長上限がネックになるため．
-mysql -A -N -uhatena -phatena -e "set global group_concat_max_len=100000;"
-
 #開始時刻，終了時刻のymd分解
 from_date_ymd=(`ruby -e 'puts "'$from_date'".split("-").join(" ")'`)
 to_date_ymd=(`ruby -e 'puts "'$to_date'".split("-").join(" ")'`)
@@ -43,12 +39,18 @@ for ((diff_m=0; diff_m<$diff_month_max; diff_m += $interval_month)); do
 
   #文書数の取得
   mysql -A -N -uhatena -phatena -Dhatena_bookmark -e "
+    # group_concatの上限値を引き上げ
+    # ref: http://blog.katty.in/3915
+    SET group_concat_max_len = 10000000;
+
+    # データの取得
     SELECT url.id 
     FROM url_morpheme 
       LEFT JOIN url ON url_morpheme.url_id = url.id 
-      WHERE url.update_date BETWEEN '$from' AND '$to' 
-        AND NOT url.update_date = '$to'
-        AND NOT EXISTS (SELECT 1 FROM stoplist WHERE stoplist.morpheme_id = url_morpheme.morpheme_id) 
-    GROUP BY url.id;" | \
+      LEFT JOIN morpheme ON url_morpheme.morpheme_id = morpheme.id 
+    WHERE url.update_date BETWEEN '$from' AND '$to' 
+      AND NOT url.update_date = '$to'
+      AND NOT EXISTS (SELECT 1 FROM stoplist WHERE stoplist.morpheme_id = url_morpheme.morpheme_id) 
+    GROUP BY url.id;" 2> /dev/null | \
   wc -l | awk '{print $1}'
 done
