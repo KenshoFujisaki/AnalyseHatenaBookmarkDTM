@@ -78,7 +78,7 @@ end
 topic_propotion_array_trans = topic_propotion_array.transpose
 topic_propotion_array_trans.each do |topics_of_the_timesegment|
   sum_propotion = topics_of_the_timesegment.inject(0){|e,sum| sum += e}
-  topics_of_the_timesegment.map!{|e| e / sum_propotion}
+  topics_of_the_timesegment.map!{|e| e / sum_propotion} if sum_propotion != 0
 end
 topic_propotion_array = topic_propotion_array_trans.transpose
 
