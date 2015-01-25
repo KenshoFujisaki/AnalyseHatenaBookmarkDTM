@@ -14,10 +14,10 @@ DTMによるトピック解析のためのスクリプトです．
 ## 事前準備
 MacOSX環境を前提に説明します．
 
-1. 解析対象のはてブ記事群のデータ準備
+1. 解析対象のはてブ記事群のデータ準備  
 [データの準備](https://github.com/KenshoFujisaki/CreateHatenaBookmarkLogDB "データ準備")に従って，はてブ記事群をMySQLに登録します．
 
-2. DTMのインストール
+2. DTMのインストール  
 [David M. Blei](http://www.cs.princeton.edu/~blei/topicmodeling.html "David M. Blei")の"Topic modeling software"から"dtm"をダウンロードし，バイナリを「./DTM/main」となるように配置します．具体的には次のような手順を行います．
     ```sh
     $ wget https://princeton-statistical-learning.googlecode.com/files/dtm_release-0.8.tgz
