@@ -55,7 +55,7 @@ termId_maxValue.each_with_index do |termId_propotion, index|
   break if index == number_of_outputs
   term_id = termId_propotion[0]
   propotion = Math.exp(termId_propotion[1])
-  term = `mysql -A -N -uhatena -phatena -Dhatena_bookmark -e "select name from morpheme where id = #{term_id}"`.chomp
+  term = `mysql -A -N -uhatena -phatena -Dhatena_bookmark -e "select name from morpheme where id = #{term_id}" 2>/dev/null`.chomp.gsub(" ","_")
   print "topic:#{topic_id} -> ##{index+1} term:#{term}:#{term_id} value:#{propotion}\n"
   output_array << [sprintf("%03d",index+1) + "_" + term] + value_array[term_id-1].map{|e| Math.exp(e).to_s}
 end
